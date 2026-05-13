@@ -8,26 +8,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="56dp"
+
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/pref_back_putton"
+            android:id="@+id/pref_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:background="@color/white"
-            android:contentDescription="@string/app_name"
-            android:padding="12dp"
+            android:contentDescription="@null"
+
             android:scaleType="centerInside"
-            android:src="@drawable/ic_arrow" />
+            android:src="@drawable/ic_back_arrow_24" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="24dp"
             android:layout_marginBottom="2dp"
             android:gravity="center"
             android:text="@string/pref_button"
@@ -38,10 +38,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/pref_line_height"
         android:layout_marginStart="@dimen/main_button_margin_side"
         android:layout_marginTop="24dp"
-        android:layout_weight="1"
+
         android:orientation="horizontal">
 
         <TextView
@@ -61,17 +61,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/main_button_margin_side"
-
+            android:checked="true"
 
             />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/pref_line_height"
         android:layout_marginStart="@dimen/main_button_margin_side"
-
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <TextView
@@ -92,17 +90,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/main_button_margin_side"
-            android:contentDescription="TODO"
+            android:contentDescription="@null"
             android:src="@drawable/ic_share_new"
             app:tint="@color/yp_text_gray" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/pref_line_height"
         android:layout_marginStart="@dimen/main_button_margin_side"
 
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <TextView
@@ -123,16 +120,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/main_button_margin_side"
-            android:contentDescription="TODO"
+            android:contentDescription="@null"
             android:src="@drawable/ic_support"
             app:tint="@color/yp_text_gray" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/pref_line_height"
         android:layout_marginStart="@dimen/main_button_margin_side"
-        android:layout_weight="1"
+
         android:orientation="horizontal">
 
         <TextView
@@ -153,15 +150,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/main_button_margin_side"
-            android:contentDescription="TODO"
+            android:contentDescription="@null"
             android:src="@drawable/ic_arrow_forward"
             app:tint="@color/yp_text_gray" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5" />
+
 
 
 </LinearLayout>

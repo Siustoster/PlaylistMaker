@@ -3,5 +3,5 @@
     <id name="search_button_pm"></id>
     <id name="media_button_pm"></id>
     <id name="pref_button_pm"></id>
-    <id name="pref_back_putton"></id>
+    <id name="pref_back_button"></id>
 </resources>
