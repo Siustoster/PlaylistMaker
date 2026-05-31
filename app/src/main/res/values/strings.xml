@@ -13,4 +13,6 @@
     <string name="support_mail_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="developer_email">gameover666999@yandex.ru</string>
     <string name="course_link">https://practicum.yandex.ru/android-developer/?from=catalog</string>
+    <string name="back_button_desc">Кнопка "назад"</string>
+    <string name="clear_button_desc">Кнопка "очистить"</string>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/PreferencesMainLayout">
 
     <LinearLayout
@@ -12,13 +11,7 @@
         <ImageButton
             android:id="@+id/pref_back_button"
             style="@style/PreferencesBackArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-
-            android:layout_marginStart="16dp"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
+            android:contentDescription="@string/back_button_desc"
             android:src="@drawable/ic_back_arrow_24" />
 
         <TextView
@@ -37,6 +30,7 @@
         <View style="@style/PreferencesView" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/theme_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/main_button_margin_side"
@@ -75,8 +69,9 @@
             android:src="@drawable/ic_support" />
     </LinearLayout>
 
-    <LinearLayout style="@style/PreferencesLinearLayout"
-        android:id="@+id/licenceAgreementButton">
+    <LinearLayout
+        android:id="@+id/licenceAgreementButton"
+        style="@style/PreferencesLinearLayout">
 
         <TextView
             style="@style/PreferencesTextView"

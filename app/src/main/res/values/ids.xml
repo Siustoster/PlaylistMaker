@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <id name="search_button_pm"></id>
-    <id name="media_button_pm"></id>
-    <id name="pref_button_pm"></id>
-    <id name="pref_back_button"></id>
+    <id name="search_button_pm" />
+    <id name="media_button_pm" />
+    <id name="pref_button_pm" />
+    <id name="pref_back_button" />
+    <id name="clear_search_button" />
+    <id name="search_edit_text" />
+    <id name="search_back_button"/>
+    <id name="theme_switch"/>
 </resources>
