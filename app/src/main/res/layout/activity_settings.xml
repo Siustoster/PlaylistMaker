@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    style="@style/PreferencesMainLayout">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,48 +11,30 @@
 
         <ImageButton
             android:id="@+id/pref_back_button"
+            style="@style/PreferencesBackArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:background="@color/white"
-            android:contentDescription="@null"
 
+            android:layout_marginStart="16dp"
+            android:contentDescription="@null"
             android:scaleType="centerInside"
             android:src="@drawable/ic_back_arrow_24" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="2dp"
-            android:gravity="center"
-            android:text="@string/pref_button"
-            android:textColor="@color/yp_black"
-
-            android:textSize="@dimen/main_text_size" />
+            style="@style/PreferencesHeader"
+            android:text="@string/pref_button" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pref_line_height"
-        android:layout_marginStart="@dimen/main_button_margin_side"
-        android:layout_marginTop="24dp"
-
-        android:orientation="horizontal">
+        style="@style/PreferencesLinearLayout"
+        android:layout_marginTop="24dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/choose_theme"
-            android:textColor="@color/yp_black"
-            android:textSize="@dimen/pref_text_size" />
+            style="@style/PreferencesTextView"
+            android:text="@string/choose_theme" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <View style="@style/PreferencesView" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="wrap_content"
@@ -67,95 +46,48 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pref_line_height"
-        android:layout_marginStart="@dimen/main_button_margin_side"
-        android:orientation="horizontal">
+        android:id="@+id/appShareButton"
+        style="@style/PreferencesLinearLayout">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/share_app"
-            android:textColor="@color/yp_black"
-            android:textSize="@dimen/pref_text_size" />
+            style="@style/PreferencesTextView"
+            android:text="@string/share_app" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <View style="@style/PreferencesView" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/main_button_margin_side"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_share_new"
-            app:tint="@color/yp_text_gray" />
+            style="@style/PreferencesImageView"
+            android:src="@drawable/ic_share_new" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pref_line_height"
-        android:layout_marginStart="@dimen/main_button_margin_side"
-
-        android:orientation="horizontal">
+        android:id="@+id/supportButton"
+        style="@style/PreferencesLinearLayout">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/support"
-            android:textColor="@color/yp_black"
-            android:textSize="@dimen/pref_text_size" />
+            style="@style/PreferencesTextView"
+            android:text="@string/support" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <View style="@style/PreferencesView" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/main_button_margin_side"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_support"
-            app:tint="@color/yp_text_gray" />
+            style="@style/PreferencesImageView"
+            android:src="@drawable/ic_support" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pref_line_height"
-        android:layout_marginStart="@dimen/main_button_margin_side"
-
-        android:orientation="horizontal">
+    <LinearLayout style="@style/PreferencesLinearLayout"
+        android:id="@+id/licenceAgreementButton">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/license_agreement"
-            android:textColor="@color/yp_black"
-            android:textSize="@dimen/pref_text_size" />
+            style="@style/PreferencesTextView"
+            android:text="@string/license_agreement" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <View style="@style/PreferencesView" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/main_button_margin_side"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_arrow_forward"
-            app:tint="@color/yp_text_gray" />
+            style="@style/PreferencesImageView"
+            android:src="@drawable/ic_arrow_forward" />
     </LinearLayout>
-
-
 
 
 </LinearLayout>
