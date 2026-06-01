@@ -64,7 +64,6 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = View.INVISIBLE
             } else clearButton.visibility = View.VISIBLE
         }
-        //editText.addTextChangedListener(simpleTextWatcher)
     }
 
     companion object {
