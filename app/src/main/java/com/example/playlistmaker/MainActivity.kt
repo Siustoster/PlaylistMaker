@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         val pref_button = findViewById<Button>(R.id.pref_button_pm)
 
         search_button.setOnClickListener {
-            startActivity(Intent(this, SearchView::class.java))
+            startActivity(Intent(this, SearchActivity::class.java))
         }
         media_button.setOnClickListener {
             startActivity(Intent(this, MediaView::class.java))

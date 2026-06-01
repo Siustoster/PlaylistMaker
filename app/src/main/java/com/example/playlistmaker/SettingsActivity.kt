@@ -24,7 +24,6 @@ class SettingsActivity : AppCompatActivity() {
 
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val initialSwitchState = when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_NO -> false
             Configuration.UI_MODE_NIGHT_YES -> true
             else -> false
         }
@@ -50,7 +49,11 @@ class SettingsActivity : AppCompatActivity() {
 
         supportButton.setOnClickListener {
             val supportIntent = Intent(Intent.ACTION_SENDTO)
-            supportIntent.data = Uri.parse("mailto:" + getString(R.string.developer_email))
+            supportIntent.data = Uri.parse("mailto:")
+            supportIntent.putExtra(
+                Intent.EXTRA_EMAIL,
+                arrayOf(getString(R.string.developer_email))
+            )
             supportIntent.putExtra(
                 Intent.EXTRA_TEXT,
                 getString(R.string.support_mail_text)

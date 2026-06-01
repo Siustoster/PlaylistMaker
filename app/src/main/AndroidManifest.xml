@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
-            android:name=".SearchView"
+            android:name=".SearchActivity"
             android:exported="false" />
         <activity
             android:name=".MediaView"
