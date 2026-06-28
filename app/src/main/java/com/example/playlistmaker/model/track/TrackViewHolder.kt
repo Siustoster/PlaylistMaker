@@ -1,5 +1,6 @@
 package com.example.playlistmaker.model.track
 
+import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.utils.Utilities
 
 class TrackViewHolder(val trackView: View) : RecyclerView.ViewHolder(trackView) {
     private val trackImage: ImageView = trackView.findViewById(R.id.track_image)
@@ -21,8 +23,8 @@ class TrackViewHolder(val trackView: View) : RecyclerView.ViewHolder(trackView) 
         Glide.with(trackView)
             .load(track.artworkUrl100)
             .centerInside()
-            .transform(RoundedCorners(2))
-            .placeholder(R.drawable.ic_media)
+            .transform(RoundedCorners(Utilities.dpToPx(2.0f, trackView.context)))
+            .placeholder(R.drawable.ic_track_placeholder)
             .into(trackImage)
 
     }
