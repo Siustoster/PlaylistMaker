@@ -92,6 +92,11 @@ class SearchActivity : AppCompatActivity() {
                 0
             ) //что бы скрыть клавиатуру по тз. Просто очистка фокуса не помогала.
             trackList.clear()
+            searchPhText.visibility = View.GONE
+            searchPhImage.visibility = View.GONE
+            internetErrorPhText.visibility = View.GONE
+            internetErrorPhImage.visibility = View.GONE
+            searchRefreshButton.visibility = View.GONE
             adapter.notifyDataSetChanged()
         }
         editText.doAfterTextChanged { s ->
