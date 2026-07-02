@@ -35,8 +35,10 @@
                 android:autofillHints="true"
                 android:drawableStart="@drawable/ic_search_edit_text_16"
                 android:hint="@string/search_button"
+                android:imeOptions="actionDone"
                 android:inputType="text"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:singleLine="true" />
 
 
             <ImageView
@@ -48,9 +50,48 @@
                 android:visibility="invisible" />
         </FrameLayout>
     </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <ImageView
+        android:id="@+id/search_error_placeholder"
+        style="@style/searchErrorPlaceholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="102dp"
+        android:contentDescription="@string/search_error_placeholder"
+        android:scaleType="center"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/search_error_placeholder_text"
+        style="@style/searchErrorPlaceholderText"
+        android:text="@string/search_error_placeholder"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/internet_error_placeholder"
+        style="@style/internetErrorPlaceholder"
+        android:contentDescription="@string/internet_error_placeholder"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/internet_error_placeholder_text"
+        style="@style/searchErrorPlaceholderText"
+        android:layout_width="312dp"
+        android:text="@string/internet_error_placeholder"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/searchRefreshButton"
+        style="@style/searchRefreshButton"
+        android:text="@string/refreshSearchButton"
+        android:visibility="gone" />
 </LinearLayout>

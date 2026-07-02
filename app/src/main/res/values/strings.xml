@@ -17,4 +17,7 @@
     <string name="clear_button_desc">Кнопка "очистить"</string>
     <string name="album_picture">Обложка альбома</string>
     <string name="arrow_forward">Стрелка "Вперёд"</string>
+    <string name="search_error_placeholder">Ничего не нашлось</string>
+    <string name="internet_error_placeholder">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="refreshSearchButton">Обновить</string>
 </resources>
