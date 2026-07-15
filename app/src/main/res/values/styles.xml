@@ -110,7 +110,7 @@
         <item name="android:tint">@color/yp_text_gray</item>
     </style>
 
-    <style name="SearchDelimeterImageView">
+    <style name="SearchDelimiterImageView">
         <item name="android:layout_width">13dp</item>
         <item name="android:layout_height">13dp</item>
         <item name="android:contentDescription">@null</item>

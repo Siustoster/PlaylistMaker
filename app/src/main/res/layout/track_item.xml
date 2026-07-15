@@ -45,8 +45,8 @@
                 android:maxLines="1" />
 
             <ImageView
-                style="@style/SearchDelimeterImageView"
-                android:contentDescription="delimeter"
+                style="@style/SearchDelimiterImageView"
+                android:contentDescription="Delimiter"
                 android:src="@drawable/ic_artist_time_delimeter" />
 
             <TextView
@@ -59,7 +59,7 @@
     </LinearLayout>
 
     <ImageView
-        style="@style/SearchDelimeterImageView"
+        style="@style/SearchDelimiterImageView"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="18dp"

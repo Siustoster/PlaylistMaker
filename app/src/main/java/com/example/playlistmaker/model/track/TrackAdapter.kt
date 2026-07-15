@@ -1,11 +1,18 @@
 package com.example.playlistmaker.model.track
 
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.model.Observer
 
-class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(
+    private var tracks: List<Track>,
+    private val searchHistory: SearchHistory
+) : RecyclerView.Adapter<TrackViewHolder>(), Observer {
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -19,10 +26,17 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
         position: Int
     ) {
         holder.bind(tracks[position])
+        holder.trackView.setOnClickListener {
+            searchHistory.saveTrackToHistory(tracks[position])
+        }
     }
 
     override fun getItemCount(): Int {
         return tracks.size
+    }
+
+    override fun updateHistory() {
+        notifyDataSetChanged()
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -20,6 +21,7 @@ import com.example.playlistmaker.model.api.TrackApiResponse
 import com.example.playlistmaker.model.track.Track
 import com.example.playlistmaker.model.track.TrackAdapter
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,19 +29,25 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
+
 class SearchActivity : AppCompatActivity() {
+
     lateinit var adapter: TrackAdapter
+    lateinit var historyAdapter: TrackAdapter
     private lateinit var itunesApiService: ItunesInterfaceApi
     private lateinit var editText: EditText
     private lateinit var recyclerView: RecyclerView
+    private lateinit var historyRecyclerView: RecyclerView
     private lateinit var searchPhImage: ImageView
     private lateinit var searchPhText: TextView
     private lateinit var internetErrorPhImage: ImageView
     private lateinit var internetErrorPhText: TextView
     private lateinit var searchRefreshButton: MaterialButton
+    private lateinit var clearHistoryButton: MaterialButton
     private lateinit var trackList: ArrayList<Track>
+    private lateinit var historyList: MutableList<Track>
+    private lateinit var historyListener: SharedPreferences.OnSharedPreferenceChangeListener
     private var editTextString: String = EDIT_TEXT_DEF
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -75,9 +83,11 @@ class SearchActivity : AppCompatActivity() {
         searchPhImage = findViewById(R.id.search_error_placeholder)
         searchPhText = findViewById(R.id.search_error_placeholder_text)
         recyclerView = findViewById(R.id.recyclerView)
+        historyRecyclerView = findViewById(R.id.historyRecyclerView)
         searchRefreshButton = findViewById(R.id.searchRefreshButton)
         internetErrorPhImage = findViewById(R.id.internet_error_placeholder)
         internetErrorPhText = findViewById(R.id.internet_error_placeholder_text)
+        clearHistoryButton = findViewById(R.id.clearHistoryButton)
         val clearButton = findViewById<ImageView>(R.id.clear_search_button)
         val backButton = findViewById<ImageButton>(R.id.search_back_button)
         backButton.setOnClickListener {
@@ -115,9 +125,34 @@ class SearchActivity : AppCompatActivity() {
         searchRefreshButton.setOnClickListener {
             performApiSearch()
         }
+
+        val sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        historyListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+                if (key == TRACK_LIST_KEY) {
+                    historyList.clear()
+                    historyList.addAll(
+                        Gson().fromJson(
+                            sharedPreferences.getString(TRACK_LIST_KEY, "[]"),
+                            Array<Track>::class.java
+                        )
+                    )
+                    historyAdapter.notifyDataSetChanged()
+                }
+            }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(historyListener)
+        val searchHistory = SearchHistory(sharedPreferences)
+        clearHistoryButton.setOnClickListener {
+            searchHistory.clearHistory()
+            historyAdapter.notifyDataSetChanged()
+        }
+        historyList = searchHistory.getHistory().toMutableList()
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(trackList)
+        historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        historyAdapter = TrackAdapter(historyList, searchHistory)
+        adapter = TrackAdapter(trackList, searchHistory)
         recyclerView.adapter = adapter
+        historyRecyclerView.adapter = historyAdapter
 
 
     }
@@ -167,5 +202,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val EDIT_TEXT_NAME = "SEARCH_EDIT_TEXT"
         const val EDIT_TEXT_DEF = ""
+        const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
     }
 }
