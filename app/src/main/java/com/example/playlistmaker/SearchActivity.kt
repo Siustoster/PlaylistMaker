@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -9,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +44,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var internetErrorPhText: TextView
     private lateinit var searchRefreshButton: MaterialButton
     private lateinit var clearHistoryButton: MaterialButton
+    private lateinit var historyLayout: LinearLayout
     private lateinit var trackList: ArrayList<Track>
     private lateinit var historyList: MutableList<Track>
     private lateinit var historyListener: SharedPreferences.OnSharedPreferenceChangeListener
@@ -88,6 +89,7 @@ class SearchActivity : AppCompatActivity() {
         internetErrorPhImage = findViewById(R.id.internet_error_placeholder)
         internetErrorPhText = findViewById(R.id.internet_error_placeholder_text)
         clearHistoryButton = findViewById(R.id.clearHistoryButton)
+        historyLayout = findViewById(R.id.historyLayout)
         val clearButton = findViewById<ImageView>(R.id.clear_search_button)
         val backButton = findViewById<ImageButton>(R.id.search_back_button)
         backButton.setOnClickListener {
@@ -96,7 +98,7 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             editText.text.clear()
             editText.clearFocus()
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(
                 editText.applicationWindowToken,
                 0
@@ -108,12 +110,6 @@ class SearchActivity : AppCompatActivity() {
             internetErrorPhImage.visibility = View.GONE
             searchRefreshButton.visibility = View.GONE
             adapter.notifyDataSetChanged()
-        }
-        editText.doAfterTextChanged { s ->
-            editTextString = s.toString()
-            if (s.isNullOrEmpty()) {
-                clearButton.visibility = View.INVISIBLE
-            } else clearButton.visibility = View.VISIBLE
         }
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -142,8 +138,21 @@ class SearchActivity : AppCompatActivity() {
             }
         sharedPreferences.registerOnSharedPreferenceChangeListener(historyListener)
         val searchHistory = SearchHistory(sharedPreferences)
+
+        editText.doAfterTextChanged { s ->
+            editTextString = s.toString()
+            if (s.isNullOrEmpty()) {
+                if (editText.hasFocus() && searchHistory.getHistory().isNotEmpty())
+                    historyLayout.visibility = View.VISIBLE
+                clearButton.visibility = View.INVISIBLE
+            } else {
+                clearButton.visibility = View.VISIBLE
+                historyLayout.visibility = View.GONE
+            }
+        }
         clearHistoryButton.setOnClickListener {
             searchHistory.clearHistory()
+            historyLayout.visibility = View.GONE
             historyAdapter.notifyDataSetChanged()
         }
         historyList = searchHistory.getHistory().toMutableList()
@@ -153,7 +162,10 @@ class SearchActivity : AppCompatActivity() {
         adapter = TrackAdapter(trackList, searchHistory)
         recyclerView.adapter = adapter
         historyRecyclerView.adapter = historyAdapter
-
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            historyLayout.visibility =
+                if (hasFocus && searchHistory.getHistory().isNotEmpty()) View.VISIBLE else View.GONE
+        }
 
     }
 

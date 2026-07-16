@@ -1,13 +1,12 @@
 package com.example.playlistmaker
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.SearchActivity.Companion.PLAYLIST_MAKER_PREFERENCES
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
@@ -22,15 +21,10 @@ class SettingsActivity : AppCompatActivity() {
         val licenceAgreementButton = findViewById<LinearLayout>(R.id.licenceAgreementButton)
         val themeSwitch = findViewById<SwitchMaterial>(R.id.theme_switch)
 
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val initialSwitchState = when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            else -> false
-        }
-        themeSwitch.isChecked = initialSwitchState
-        themeSwitch.setOnCheckedChangeListener { button, isChecked ->
-            if (isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        themeSwitch.isChecked = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+            .getString(DARK_THEME_KEY, "").toBoolean()
+        themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
         }
 
         backButton.setOnClickListener {
