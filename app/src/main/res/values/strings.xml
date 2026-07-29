@@ -22,4 +22,13 @@
     <string name="refreshSearchButton">Обновить</string>
     <string name="clear_history">Очистить историю</string>
     <string name="history_header">Вы искали</string>
+    <string name="track_length">Длительность</string>
+    <string name="year">Год</string>
+    <string name="album_name">Альбом</string>
+    <string name="genre_name">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="album_cover">Обложка альбома</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="play_button_desc">Кнопка плей</string>
+    <string name="add_to_favourites">Добавить в любимое</string>
 </resources>
