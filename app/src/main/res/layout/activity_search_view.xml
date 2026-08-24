@@ -51,6 +51,15 @@
         </FrameLayout>
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/searchProgressBar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="140dp"
+        android:indeterminateTint="@color/yp_blue"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/historyLayout"
         android:layout_width="match_parent"

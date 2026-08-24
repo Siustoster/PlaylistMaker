@@ -3,18 +3,21 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,7 +52,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackList: ArrayList<Track>
     private lateinit var historyList: MutableList<Track>
     private lateinit var historyListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var progressBar: ProgressBar
     private var editTextString: String = EDIT_TEXT_DEF
+    private var isClickAllowed = true
+    val handler = Handler(Looper.getMainLooper())
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -91,8 +97,10 @@ class SearchActivity : AppCompatActivity() {
         internetErrorPhText = findViewById(R.id.internet_error_placeholder_text)
         clearHistoryButton = findViewById(R.id.clearHistoryButton)
         historyLayout = findViewById(R.id.historyLayout)
+        progressBar = findViewById(R.id.searchProgressBar)
         val clearButton = findViewById<ImageView>(R.id.clear_search_button)
         val backButton = findViewById<ImageButton>(R.id.search_back_button)
+
         backButton.setOnClickListener {
             finish()
         }
@@ -112,13 +120,7 @@ class SearchActivity : AppCompatActivity() {
             searchRefreshButton.visibility = View.GONE
             adapter.notifyDataSetChanged()
         }
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                performApiSearch()
-                true
-            }
-            false
-        }
+        editText.addTextChangedListener { apiSearchDebounce() }
         searchRefreshButton.setOnClickListener {
             performApiSearch()
         }
@@ -160,10 +162,12 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
         historyAdapter = TrackAdapter(historyList, searchHistory) { selectedTrack ->
-            openPlayer(selectedTrack)
+            if (clickDebounce())
+                openPlayer(selectedTrack)
         }
         adapter = TrackAdapter(trackList, searchHistory) { selectedTrack ->
-            openPlayer(selectedTrack)
+            if (clickDebounce())
+                openPlayer(selectedTrack)
         }
         recyclerView.adapter = adapter
         historyRecyclerView.adapter = historyAdapter
@@ -185,14 +189,32 @@ class SearchActivity : AppCompatActivity() {
         intent.putExtra("genreName", track.primaryGenreName)
         intent.putExtra("albumCover", track.artworkUrl100)
         intent.putExtra("year", track.releaseDate)
+        intent.putExtra("previewURL", track.previewUrl)
 
 
         startActivity(intent)
     }
 
+    fun apiSearchDebounce() {
+        val searchRunnable = Runnable { performApiSearch() }
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     fun performApiSearch() {
+
         //уходим от дублирования кода
-        if (!editText.text.isEmpty())
+        if (!editText.text.isEmpty()) {
+            progressBar.visibility = View.VISIBLE
             itunesApiService.search(editText.text.toString())
                 .enqueue(object : Callback<TrackApiResponse> {
                     override fun onResponse(
@@ -207,6 +229,7 @@ class SearchActivity : AppCompatActivity() {
                                 internetErrorPhText.visibility = View.GONE
                                 internetErrorPhImage.visibility = View.GONE
                                 searchRefreshButton.visibility = View.GONE
+                                progressBar.visibility = View.GONE
                                 trackList.clear()
                                 trackList.addAll(response.body()?.trackList!!)
                                 adapter.notifyDataSetChanged()
@@ -214,6 +237,7 @@ class SearchActivity : AppCompatActivity() {
                                 searchPhText.visibility = View.VISIBLE
                                 searchPhImage.visibility = View.VISIBLE
                                 recyclerView.visibility = View.GONE
+                                progressBar.visibility = View.GONE
                                 internetErrorPhText.visibility = View.GONE
                                 internetErrorPhImage.visibility = View.GONE
                                 searchRefreshButton.visibility = View.GONE
@@ -225,16 +249,21 @@ class SearchActivity : AppCompatActivity() {
                         recyclerView.visibility = View.GONE
                         searchPhText.visibility = View.GONE
                         searchPhImage.visibility = View.GONE
+                        progressBar.visibility = View.GONE
                         internetErrorPhText.visibility = View.VISIBLE
                         internetErrorPhImage.visibility = View.VISIBLE
                         searchRefreshButton.visibility = View.VISIBLE
                     }
                 })
+        }
     }
 
     companion object {
         const val EDIT_TEXT_NAME = "SEARCH_EDIT_TEXT"
         const val EDIT_TEXT_DEF = ""
         const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+
+        const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
