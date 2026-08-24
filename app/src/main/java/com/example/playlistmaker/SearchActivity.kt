@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -158,8 +159,12 @@ class SearchActivity : AppCompatActivity() {
         historyList = searchHistory.getHistory().toMutableList()
         recyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        historyAdapter = TrackAdapter(historyList, searchHistory)
-        adapter = TrackAdapter(trackList, searchHistory)
+        historyAdapter = TrackAdapter(historyList, searchHistory) { selectedTrack ->
+            openPlayer(selectedTrack)
+        }
+        adapter = TrackAdapter(trackList, searchHistory) { selectedTrack ->
+            openPlayer(selectedTrack)
+        }
         recyclerView.adapter = adapter
         historyRecyclerView.adapter = historyAdapter
         editText.setOnFocusChangeListener { view, hasFocus ->
@@ -167,6 +172,22 @@ class SearchActivity : AppCompatActivity() {
                 if (hasFocus && searchHistory.getHistory().isNotEmpty()) View.VISIBLE else View.GONE
         }
 
+    }
+
+    private fun openPlayer(track: Track) {
+        val intent = Intent(this, TrackActivity::class.java)
+
+        intent.putExtra("track_name", track.trackName)
+        intent.putExtra("artist_name", track.artistName)
+        intent.putExtra("duration", track.trackTime)
+        intent.putExtra("collectionName", track.collectionName)
+        intent.putExtra("country", track.country)
+        intent.putExtra("genreName", track.primaryGenreName)
+        intent.putExtra("albumCover", track.artworkUrl100)
+        intent.putExtra("year", track.releaseDate)
+
+
+        startActivity(intent)
     }
 
     fun performApiSearch() {

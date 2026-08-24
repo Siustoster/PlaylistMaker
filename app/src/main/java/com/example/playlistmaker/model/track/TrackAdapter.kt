@@ -1,5 +1,6 @@
 package com.example.playlistmaker.model.track
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +9,8 @@ import com.example.playlistmaker.SearchHistory
 
 class TrackAdapter(
     private var tracks: List<Track>,
-    private val searchHistory: SearchHistory
+    private val searchHistory: SearchHistory,
+    private val onItemClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -25,7 +27,9 @@ class TrackAdapter(
     ) {
         holder.bind(tracks[position])
         holder.trackView.setOnClickListener {
+            onItemClick(tracks[position])
             searchHistory.saveTrackToHistory(tracks[position])
+
         }
     }
 
