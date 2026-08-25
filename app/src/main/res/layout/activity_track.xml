@@ -106,7 +106,7 @@
             android:gravity="center"
             android:minHeight="24dp"
             android:paddingTop="1dp"
-            android:text="0:30"
+            android:text="00:00"
             app:layout_constraintEnd_toEndOf="@id/playButton"
             app:layout_constraintStart_toStartOf="@id/playButton"
             app:layout_constraintTop_toBottomOf="@id/playButton" />
