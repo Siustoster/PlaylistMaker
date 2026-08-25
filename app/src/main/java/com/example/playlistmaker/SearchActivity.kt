@@ -56,6 +56,7 @@ class SearchActivity : AppCompatActivity() {
     private var editTextString: String = EDIT_TEXT_DEF
     private var isClickAllowed = true
     val handler = Handler(Looper.getMainLooper())
+    val searchRunnable = Runnable { performApiSearch() }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -196,7 +197,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun apiSearchDebounce() {
-        val searchRunnable = Runnable { performApiSearch() }
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }

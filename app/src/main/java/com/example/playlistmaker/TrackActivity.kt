@@ -28,13 +28,11 @@ class TrackActivity : AppCompatActivity() {
     private lateinit var play: ImageButton
     private lateinit var trackPlayTime: TextView
     val handler = Handler(Looper.getMainLooper())
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val timeRunnable = object : Runnable {
         override fun run() {
             if (playerState == STATE_PLAYING) {
-                trackPlayTime.text = SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
-                ).format(mediaPlayer.currentPosition)
+                trackPlayTime.text = dateFormat.format(mediaPlayer.currentPosition)
                 handler.postDelayed(this, TIME_REFRESH_DELAY)
             }
         }
