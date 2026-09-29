@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.presentation.ui.SearchActivity.Companion.PLAYLIST_MAKER_PREFERENCES
+import androidx.core.content.edit
 
 const val DARK_THEME_KEY = "dark_theme_enabled"
 
@@ -39,8 +40,8 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE).edit()
-            .putString(DARK_THEME_KEY, darkThemeEnabled.toString())
-            .apply()
+        getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE).edit {
+            putString(DARK_THEME_KEY, darkThemeEnabled.toString())
+        }
     }
 }

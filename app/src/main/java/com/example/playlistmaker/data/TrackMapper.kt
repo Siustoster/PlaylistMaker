@@ -9,7 +9,7 @@ object TrackMapper {
         trackName = dto.trackName,
         artistName = dto.artistName,
         trackTime = dto.trackTime,
-        artworkUrl100 = dto.trackTime,
+        artworkUrl100 = dto.artworkUrl100,
         collectionName = dto.collectionName,
         releaseDate = dto.releaseDate,
         primaryGenreName = dto.primaryGenreName,

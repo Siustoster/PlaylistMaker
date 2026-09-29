@@ -21,12 +21,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.TRACK_LIST_KEY
 import com.example.playlistmaker.data.TrackMapper
 import com.example.playlistmaker.data.dto.TrackApiResponse
 import com.example.playlistmaker.data.network.ItunesInterfaceApi
+import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.ui.track.TrackActivity
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
@@ -44,7 +46,6 @@ class SearchActivity : AppCompatActivity() {
 
     lateinit var adapter: TrackAdapter
     lateinit var historyAdapter: TrackAdapter
-    private lateinit var itunesApiService: ItunesInterfaceApi
     private lateinit var editText: EditText
     private lateinit var recyclerView: RecyclerView
     private lateinit var historyRecyclerView: RecyclerView
@@ -63,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
     private var isClickAllowed = true
     val handler = Handler(Looper.getMainLooper())
     val searchRunnable = Runnable { performApiSearch() }
-
+    val trackInteractor = Creator.provideTrackInteractor()
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EDIT_TEXT_NAME, editTextString)
@@ -88,12 +89,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         trackList = ArrayList()
-        val itunesBaseUrl = "https://itunes.apple.com"
-        val retrofit = Retrofit.Builder()
-            .baseUrl(itunesBaseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        itunesApiService = retrofit.create<ItunesInterfaceApi>()
         editText = findViewById(R.id.search_edit_text)
         searchPhImage = findViewById(R.id.search_error_placeholder)
         searchPhText = findViewById(R.id.search_error_placeholder_text)
@@ -221,14 +216,12 @@ class SearchActivity : AppCompatActivity() {
         //уходим от дублирования кода
         if (!editText.text.isEmpty()) {
             progressBar.visibility = View.VISIBLE
-            itunesApiService.search(editText.text.toString())
-                .enqueue(object : Callback<TrackApiResponse> {
-                    override fun onResponse(
-                        call: Call<TrackApiResponse?>,
-                        response: Response<TrackApiResponse?>
-                    ) {
-                        if (response.code() == 200) {
-                            if (response.body()?.resultCount!! > 0) {
+            trackInteractor.searchTrack(
+                editText.text.toString(),
+                object : TrackInteractor.TrackConsumer {
+                    override fun consume(foundTracks: Result<List<Track>>) {
+                        if (foundTracks.isSuccess) {
+                            if (!foundTracks.getOrNull().orEmpty().isEmpty()) {
                                 recyclerView.visibility = View.VISIBLE
                                 searchPhText.visibility = View.GONE
                                 searchPhImage.visibility = View.GONE
@@ -237,8 +230,9 @@ class SearchActivity : AppCompatActivity() {
                                 searchRefreshButton.visibility = View.GONE
                                 progressBar.visibility = View.GONE
                                 trackList.clear()
-                                response.body()?.trackList?.let(TrackMapper::toDomain)
+                                trackList.addAll(foundTracks.getOrNull()!!)
                                 adapter.notifyDataSetChanged()
+
                             } else {
                                 searchPhText.visibility = View.VISIBLE
                                 searchPhImage.visibility = View.VISIBLE
@@ -248,18 +242,18 @@ class SearchActivity : AppCompatActivity() {
                                 internetErrorPhImage.visibility = View.GONE
                                 searchRefreshButton.visibility = View.GONE
                             }
+                        } else {
+                            recyclerView.visibility = View.GONE
+                            searchPhText.visibility = View.GONE
+                            searchPhImage.visibility = View.GONE
+                            progressBar.visibility = View.GONE
+                            internetErrorPhText.visibility = View.VISIBLE
+                            internetErrorPhImage.visibility = View.VISIBLE
+                            searchRefreshButton.visibility = View.VISIBLE
                         }
+
                     }
 
-                    override fun onFailure(call: Call<TrackApiResponse?>, t: Throwable) {
-                        recyclerView.visibility = View.GONE
-                        searchPhText.visibility = View.GONE
-                        searchPhImage.visibility = View.GONE
-                        progressBar.visibility = View.GONE
-                        internetErrorPhText.visibility = View.VISIBLE
-                        internetErrorPhImage.visibility = View.VISIBLE
-                        searchRefreshButton.visibility = View.VISIBLE
-                    }
                 })
         }
     }
