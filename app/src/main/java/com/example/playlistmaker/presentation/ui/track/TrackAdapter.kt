@@ -1,11 +1,11 @@
-package com.example.playlistmaker.model.track
-
+package com.example.playlistmaker.presentation.ui.track
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(
     private var tracks: List<Track>,

@@ -1,9 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.SearchActivity.Companion.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.presentation.ui.SearchActivity.Companion.PLAYLIST_MAKER_PREFERENCES
 
 const val DARK_THEME_KEY = "dark_theme_enabled"
 

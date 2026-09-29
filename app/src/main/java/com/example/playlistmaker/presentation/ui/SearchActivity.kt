@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,9 +21,15 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.model.api.TrackApiResponse
-import com.example.playlistmaker.model.track.Track
-import com.example.playlistmaker.model.track.TrackAdapter
+import com.example.playlistmaker.R
+import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.TRACK_LIST_KEY
+import com.example.playlistmaker.data.TrackMapper
+import com.example.playlistmaker.data.dto.TrackApiResponse
+import com.example.playlistmaker.data.network.ItunesInterfaceApi
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.ui.track.TrackActivity
+import com.example.playlistmaker.presentation.ui.track.TrackAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import retrofit2.Call
@@ -32,7 +38,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-
+import kotlin.collections.addAll
 
 class SearchActivity : AppCompatActivity() {
 
@@ -231,7 +237,7 @@ class SearchActivity : AppCompatActivity() {
                                 searchRefreshButton.visibility = View.GONE
                                 progressBar.visibility = View.GONE
                                 trackList.clear()
-                                trackList.addAll(response.body()?.trackList!!)
+                                response.body()?.trackList?.let(TrackMapper::toDomain)
                                 adapter.notifyDataSetChanged()
                             } else {
                                 searchPhText.visibility = View.VISIBLE
