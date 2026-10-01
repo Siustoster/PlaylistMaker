@@ -1,7 +1,6 @@
 package com.example.playlistmaker.presentation.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,24 +22,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.SearchHistory
-import com.example.playlistmaker.TRACK_LIST_KEY
-import com.example.playlistmaker.data.TrackMapper
-import com.example.playlistmaker.data.dto.TrackApiResponse
-import com.example.playlistmaker.data.network.ItunesInterfaceApi
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.ui.track.TrackActivity
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
 import com.google.android.material.button.MaterialButton
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import kotlin.collections.addAll
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -58,8 +45,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyLayout: LinearLayout
     private lateinit var trackList: ArrayList<Track>
     private lateinit var historyList: MutableList<Track>
-    private lateinit var historyListener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var progressBar: ProgressBar
+    val searchHistoryInteractor = Creator.provideSearchHistoryInteractor()
     private var editTextString: String = EDIT_TEXT_DEF
     private var isClickAllowed = true
     val handler = Handler(Looper.getMainLooper())
@@ -126,28 +113,10 @@ class SearchActivity : AppCompatActivity() {
         searchRefreshButton.setOnClickListener {
             performApiSearch()
         }
-
-        val sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        historyListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-                if (key == TRACK_LIST_KEY) {
-                    historyList.clear()
-                    historyList.addAll(
-                        Gson().fromJson(
-                            sharedPreferences.getString(TRACK_LIST_KEY, "[]"),
-                            Array<Track>::class.java
-                        )
-                    )
-                    historyAdapter.notifyDataSetChanged()
-                }
-            }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(historyListener)
-        val searchHistory = SearchHistory(sharedPreferences)
-
         editText.doAfterTextChanged { s ->
             editTextString = s.toString()
             if (s.isNullOrEmpty()) {
-                if (editText.hasFocus() && searchHistory.getHistory().isNotEmpty())
+                if (editText.hasFocus() && searchHistoryInteractor.getHistory().isNotEmpty())
                     historyLayout.visibility = View.VISIBLE
                 clearButton.visibility = View.INVISIBLE
             } else {
@@ -156,26 +125,34 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         clearHistoryButton.setOnClickListener {
-            searchHistory.clearHistory()
+            searchHistoryInteractor.clearHistory()
             historyLayout.visibility = View.GONE
             historyAdapter.notifyDataSetChanged()
         }
-        historyList = searchHistory.getHistory().toMutableList()
+        historyList = searchHistoryInteractor.getHistory().toMutableList()
         recyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        historyAdapter = TrackAdapter(historyList, searchHistory) { selectedTrack ->
-            if (clickDebounce())
+        historyAdapter = TrackAdapter(historyList, searchHistoryInteractor) { selectedTrack ->
+            if (clickDebounce()) {
+                searchHistoryInteractor.saveTrackToHistory(selectedTrack)  // ← домен сохранил
+                refreshHistory()
                 openPlayer(selectedTrack)
+            }
         }
-        adapter = TrackAdapter(trackList, searchHistory) { selectedTrack ->
-            if (clickDebounce())
+        adapter = TrackAdapter(trackList, searchHistoryInteractor) { selectedTrack ->
+            if (clickDebounce()) {
+                searchHistoryInteractor.saveTrackToHistory(selectedTrack)  // ← домен сохранил
+                refreshHistory()
                 openPlayer(selectedTrack)
+            }
         }
         recyclerView.adapter = adapter
         historyRecyclerView.adapter = historyAdapter
         editText.setOnFocusChangeListener { view, hasFocus ->
             historyLayout.visibility =
-                if (hasFocus && searchHistory.getHistory().isNotEmpty()) View.VISIBLE else View.GONE
+                if (hasFocus && searchHistoryInteractor.getHistory()
+                        .isNotEmpty()
+                ) View.VISIBLE else View.GONE
         }
 
     }
@@ -258,10 +235,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun refreshHistory() {
+        historyList.clear()
+        historyList.addAll(searchHistoryInteractor.getHistory())
+        historyAdapter.notifyDataSetChanged()
+    }
+
     companion object {
         const val EDIT_TEXT_NAME = "SEARCH_EDIT_TEXT"
         const val EDIT_TEXT_DEF = ""
-        const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+
+        //const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
         const val SEARCH_DEBOUNCE_DELAY = 2000L
 
         const val CLICK_DEBOUNCE_DELAY = 1000L

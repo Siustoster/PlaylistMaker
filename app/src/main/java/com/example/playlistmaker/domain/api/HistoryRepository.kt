@@ -2,8 +2,8 @@ package com.example.playlistmaker.domain.api
 
 import com.example.playlistmaker.domain.models.Track
 
-interface HistoryInteractor {
-    fun getHistory() : List<Track>
+interface HistoryRepository {
+    fun getHistory(): List<Track>
     fun clearHistory()
-    fun saveTrackToHistory(track: Track)
+    fun saveTracksToHistory(tracks: List<Track>)
 }
