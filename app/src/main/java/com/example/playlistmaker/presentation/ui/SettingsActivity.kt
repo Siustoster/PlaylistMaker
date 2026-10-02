@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -6,23 +6,22 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.SearchActivity.Companion.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
-
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
+        val sharedPreferences = Creator.provideSharedPreferencesInteractor()
         val backButton = findViewById<ImageButton>(R.id.pref_back_button)
         val appShareButton = findViewById<LinearLayout>(R.id.appShareButton)
         val supportButton = findViewById<LinearLayout>(R.id.supportButton)
         val licenceAgreementButton = findViewById<LinearLayout>(R.id.licenceAgreementButton)
         val themeSwitch = findViewById<SwitchMaterial>(R.id.theme_switch)
 
-        themeSwitch.isChecked = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-            .getString(DARK_THEME_KEY, "").toBoolean()
+        themeSwitch.isChecked = sharedPreferences.getSP(DARK_THEME_KEY, "").toBoolean()
         themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
             (applicationContext as App).switchTheme(isChecked)
         }
