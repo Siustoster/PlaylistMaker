@@ -1,13 +1,10 @@
-package com.example.playlistmaker.presentation.ui
+package com.example.playlistmaker.ui
 
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-//import com.example.playlistmaker.presentation.ui.SearchActivity.Companion.PLAYLIST_MAKER_PREFERENCES
-import androidx.core.content.edit
-import com.example.playlistmaker.Creator
+import com.example.playlistmaker.creator.Creator
 
-const val DARK_THEME_KEY = "dark_theme_enabled"
 
 class App : Application() {
     var darkTheme = false
@@ -42,5 +39,8 @@ class App : Application() {
         )
         val sharedPreferences = Creator.provideSharedPreferencesInteractor()
         sharedPreferences.setSP(DARK_THEME_KEY, darkThemeEnabled.toString())
+    }
+    companion object {
+        const val DARK_THEME_KEY = "dark_theme_enabled"
     }
 }

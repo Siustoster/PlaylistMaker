@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.ui
+package com.example.playlistmaker.ui.settings.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -6,8 +6,9 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.ui.App
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
@@ -21,7 +22,7 @@ class SettingsActivity : AppCompatActivity() {
         val licenceAgreementButton = findViewById<LinearLayout>(R.id.licenceAgreementButton)
         val themeSwitch = findViewById<SwitchMaterial>(R.id.theme_switch)
 
-        themeSwitch.isChecked = sharedPreferences.getSP(DARK_THEME_KEY, "").toBoolean()
+        themeSwitch.isChecked = sharedPreferences.getSP(App.DARK_THEME_KEY, "").toBoolean()
         themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
             (applicationContext as App).switchTheme(isChecked)
         }

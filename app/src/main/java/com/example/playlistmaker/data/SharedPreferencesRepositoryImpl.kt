@@ -1,6 +1,6 @@
 package com.example.playlistmaker.data
 
-import com.example.playlistmaker.Creator
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.api.SharedPreferencesRepository
 import androidx.core.content.edit
 

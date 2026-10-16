@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.ui
+package com.example.playlistmaker.ui.search.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,14 +20,13 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.ui.track.TrackActivity
-import com.example.playlistmaker.presentation.ui.track.TrackAdapter
+import com.example.playlistmaker.ui.track.TrackActivity
+import com.example.playlistmaker.ui.track.TrackAdapter
 import com.google.android.material.button.MaterialButton
-
 
 class SearchActivity : AppCompatActivity() {
 

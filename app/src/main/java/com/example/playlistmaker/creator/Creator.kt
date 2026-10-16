@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.creator
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,7 +8,6 @@ import com.example.playlistmaker.data.SharedPreferencesRepositoryImpl
 import com.example.playlistmaker.data.TrackRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.domain.api.HistoryInteractor
-import com.example.playlistmaker.domain.api.HistoryRepository
 import com.example.playlistmaker.domain.api.SharedPreferencesInteractor
 import com.example.playlistmaker.domain.api.SharedPreferencesRepository
 import com.example.playlistmaker.domain.api.TrackInteractor
