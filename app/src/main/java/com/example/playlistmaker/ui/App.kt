@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.settings.model.ThemeSettings
 
 
 class App : Application() {
@@ -41,6 +42,6 @@ class App : Application() {
         sharedPreferences.setSP(DARK_THEME_KEY, darkThemeEnabled.toString())
     }
     companion object {
-        const val DARK_THEME_KEY = "dark_theme_enabled"
+        const val DARK_THEME_KEY = ThemeSettings.KEY
     }
 }

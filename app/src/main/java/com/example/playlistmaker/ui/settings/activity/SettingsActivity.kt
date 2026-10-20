@@ -1,68 +1,47 @@
 package com.example.playlistmaker.ui.settings.activity
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.ui.App
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
+    private val viewModel: SettingsViewModel by viewModels { SettingsViewModel.getFactory() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        val sharedPreferences = Creator.provideSharedPreferencesInteractor()
-        val backButton = findViewById<ImageButton>(R.id.pref_back_button)
-        val appShareButton = findViewById<LinearLayout>(R.id.appShareButton)
-        val supportButton = findViewById<LinearLayout>(R.id.supportButton)
-        val licenceAgreementButton = findViewById<LinearLayout>(R.id.licenceAgreementButton)
-        val themeSwitch = findViewById<SwitchMaterial>(R.id.theme_switch)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
 
-        themeSwitch.isChecked = sharedPreferences.getSP(App.DARK_THEME_KEY, "").toBoolean()
-        themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
+        setContentView(binding.root)
+
+        viewModel.themeLiveData.observe(this) { isDark ->
+            if (binding.themeSwitch.isChecked != isDark)
+                binding.themeSwitch.isChecked = isDark
+            (applicationContext as App).switchTheme(isDark)
+        }
+
+        binding.themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
             (applicationContext as App).switchTheme(isChecked)
         }
 
-        backButton.setOnClickListener {
+        binding.prefBackButton.setOnClickListener {
             finish()
         }
 
-        appShareButton.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(
-                Intent.EXTRA_TEXT,
-                getString(R.string.course_link)
-            )
-            startActivity(shareIntent)
+        binding.appShareButton.setOnClickListener {
+            viewModel.shareApp()
         }
 
-        supportButton.setOnClickListener {
-            val supportIntent = Intent(Intent.ACTION_SENDTO)
-            supportIntent.data = Uri.parse("mailto:")
-            supportIntent.putExtra(
-                Intent.EXTRA_EMAIL,
-                arrayOf(getString(R.string.developer_email))
-            )
-            supportIntent.putExtra(
-                Intent.EXTRA_TEXT,
-                getString(R.string.support_mail_text)
-            )
-            supportIntent.putExtra(
-                Intent.EXTRA_SUBJECT,
-                getString(R.string.support_mail_subject)
-            )
-            startActivity(supportIntent)
+        binding.supportButton.setOnClickListener {
+            viewModel.openSupport()
         }
 
-        licenceAgreementButton.setOnClickListener {
-            val licenceIntent = Intent(Intent.ACTION_VIEW)
-            licenceIntent.data = Uri.parse(getString(R.string.license_agreement_link))
-            startActivity(licenceIntent)
+        binding.licenceAgreementButton.setOnClickListener {
+            viewModel.openTerms()
         }
     }
 }

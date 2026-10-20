@@ -1,4 +1,5 @@
 package com.example.playlistmaker.domain.settings.model
 
-class ThemeSettings {
+data class ThemeSettings(val darkTheme: Boolean) {
+    companion object { const val KEY = "dark_theme_enabled" }
 }

@@ -7,6 +7,7 @@ import com.example.playlistmaker.data.SearchHistoryImpl
 import com.example.playlistmaker.data.SharedPreferencesRepositoryImpl
 import com.example.playlistmaker.data.TrackRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.data.sharing.impl.ExternalNavigatorImpl
 import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.SharedPreferencesInteractor
 import com.example.playlistmaker.domain.api.SharedPreferencesRepository
@@ -15,6 +16,10 @@ import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.impl.HistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.SharedPreferencesInteractorImpl
 import com.example.playlistmaker.domain.impl.TrackInteractorImpl
+import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.domain.settings.impl.SettingsInteractorImpl
+import com.example.playlistmaker.domain.sharing.SharingInteractor
+import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 import com.google.gson.Gson
 
 object Creator {
@@ -55,5 +60,8 @@ object Creator {
 
     fun provideTrackInteractor(): TrackInteractor =
         TrackInteractorImpl(getTrackRepository())
+    fun provideSharingInteractor(): SharingInteractor =
+        SharingInteractorImpl(ExternalNavigatorImpl(applicationContext))
+    fun provideSettingsInteractor(): SettingsInteractor = SettingsInteractorImpl(getSharedPreferencesRepository())
 
 }
