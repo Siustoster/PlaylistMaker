@@ -1,8 +1,8 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.data.search
 
-import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.api.SharedPreferencesRepository
 import androidx.core.content.edit
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.search.SharedPreferencesRepository
 
 class SharedPreferencesRepositoryImpl : SharedPreferencesRepository {
     private val sharedPreferences = Creator.provideSharedPreferences()

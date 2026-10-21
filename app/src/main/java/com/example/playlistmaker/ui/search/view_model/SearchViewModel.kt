@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.api.HistoryInteractor
-import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.search.HistoryInteractor
+import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.SingleLiveEvent
 

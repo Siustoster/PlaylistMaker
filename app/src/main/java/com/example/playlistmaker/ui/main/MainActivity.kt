@@ -1,10 +1,11 @@
-package com.example.playlistmaker.ui
+package com.example.playlistmaker.ui.main
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
+import com.example.playlistmaker.ui.MediaView
 import com.example.playlistmaker.ui.search.activity.SearchActivity
 import com.example.playlistmaker.ui.settings.activity.SettingsActivity
 

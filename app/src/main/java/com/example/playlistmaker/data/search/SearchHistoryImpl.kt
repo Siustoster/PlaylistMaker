@@ -1,9 +1,7 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.data.search
 
-import android.content.SharedPreferences
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.domain.api.SharedPreferencesInteractor
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.SharedPreferencesInteractor
 import com.google.gson.Gson
 
 const val TRACK_LIST_KEY = "saved_track_list"

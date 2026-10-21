@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.settings.impl
 
-import com.example.playlistmaker.domain.api.SharedPreferencesRepository
+import com.example.playlistmaker.domain.search.SharedPreferencesRepository
 import com.example.playlistmaker.domain.settings.SettingsInteractor
 import com.example.playlistmaker.domain.settings.model.ThemeSettings
 

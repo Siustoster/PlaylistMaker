@@ -23,11 +23,11 @@
             android:name=".ui.settings.activity.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.track.TrackActivity"
+            android:name=".ui.player.activity.TrackActivity"
             android:exported="false" />
         
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

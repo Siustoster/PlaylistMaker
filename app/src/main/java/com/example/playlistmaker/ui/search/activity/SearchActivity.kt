@@ -15,7 +15,7 @@ import com.example.playlistmaker.databinding.ActivitySearchViewBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.view_model.SearchState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.track.TrackActivity
+import com.example.playlistmaker.ui.player.activity.TrackActivity
 import com.example.playlistmaker.ui.track.TrackAdapter
 
 class SearchActivity : AppCompatActivity() {

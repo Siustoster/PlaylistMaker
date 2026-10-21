@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.search.Impl
 
-import com.example.playlistmaker.domain.api.SharedPreferencesInteractor
-import com.example.playlistmaker.domain.api.SharedPreferencesRepository
+import com.example.playlistmaker.domain.search.SharedPreferencesInteractor
+import com.example.playlistmaker.domain.search.SharedPreferencesRepository
 
 class SharedPreferencesInteractorImpl(val repository: SharedPreferencesRepository) :
     SharedPreferencesInteractor {
