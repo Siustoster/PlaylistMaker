@@ -1,11 +1,12 @@
 package com.example.playlistmaker.data.search
 
+import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.search.SharedPreferencesRepository
 
-class SharedPreferencesRepositoryImpl : SharedPreferencesRepository {
-    private val sharedPreferences = Creator.provideSharedPreferences()
+class SharedPreferencesRepositoryImpl(
+    private val sharedPreferences: SharedPreferences
+) : SharedPreferencesRepository {
     override fun getSP(key: String, default: String): String {
         return sharedPreferences.getString(key, default) ?: default
     }

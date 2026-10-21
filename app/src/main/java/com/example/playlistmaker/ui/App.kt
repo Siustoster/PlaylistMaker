@@ -14,17 +14,14 @@ class App : Application() {
         Creator.init(this)
 
         val settingsInteractor = Creator.provideSettingsInteractor()
-        if (settingsInteractor.getThemeSettings().darkTheme) {
+        if (!settingsInteractor.hasThemeSettings()) {
             val currentNightMode =
                 resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            val initialSwitchState = when (currentNightMode) {
-                Configuration.UI_MODE_NIGHT_YES -> true
-                else -> false
-            }
-            settingsInteractor.updateThemeSetting(ThemeSettings(initialSwitchState))
+            settingsInteractor.updateThemeSetting(ThemeSettings(currentNightMode == Configuration.UI_MODE_NIGHT_YES))
         }
         switchTheme(settingsInteractor.getThemeSettings().darkTheme)
     }
+
 
     fun switchTheme(darkThemeEnabled: Boolean) {
         AppCompatDelegate.setDefaultNightMode(

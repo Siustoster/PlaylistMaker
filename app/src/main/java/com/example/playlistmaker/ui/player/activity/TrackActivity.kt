@@ -21,7 +21,7 @@ import java.util.Locale
 
 class TrackActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrackBinding
-    private val viewModel: PlayerViewModel by viewModels()
+    private val viewModel: PlayerViewModel by viewModels { PlayerViewModel.getFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,15 +92,13 @@ class TrackActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.state.observe(this) { state ->
-            binding.playButton.isEnabled = state != PlayerViewModel.STATE_DEFAULT
-            val icon = if (state == PlayerViewModel.STATE_PLAYING) {
-                R.drawable.ic_pause_button_100
-            } else {
-                R.drawable.ic_play_button_100
-            }
-            binding.playButton.setImageResource(icon)
+            binding.playButton.isEnabled = state.isPlayButtonEnabled
+            binding.playButton.setImageResource(
+                if (state.isPlaying) R.drawable.ic_pause_button_100
+                else R.drawable.ic_play_button_100
+            )
+            binding.currentTrackPlayTime.text = state.position
         }
-        viewModel.position.observe(this) { binding.currentTrackPlayTime.text = it }
     }
 
     override fun onPause() {

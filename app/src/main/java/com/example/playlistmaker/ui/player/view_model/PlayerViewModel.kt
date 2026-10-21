@@ -1,61 +1,90 @@
 package com.example.playlistmaker.ui.player.view_model
 
-import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.player.PlayerInteractor
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel : ViewModel() {
+enum class PlayerStatus { DEFAULT, PREPARED, PLAYING, PAUSED }
+
+data class PlayerState(
+    val status: PlayerStatus,
+    val position: String
+) {
+    val isPlayButtonEnabled: Boolean get() = status != PlayerStatus.DEFAULT
+    val isPlaying: Boolean get() = status == PlayerStatus.PLAYING
+}
+
+class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewModel() {
 
     companion object {
-         const val STATE_DEFAULT = 0
-         const val STATE_PREPARED = 1
-         const val STATE_PLAYING = 2
-         const val STATE_PAUSED = 3
         private const val TIME_REFRESH_DELAY = 500L
         private const val DEFAULT_POSITION = "00:00"
-    }
 
-    private val mediaPlayer = MediaPlayer()
-    private val handler = Handler(Looper.getMainLooper())
-    private val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-
-    private val mutableState = MutableLiveData(STATE_DEFAULT)
-    val state: LiveData<Int> = mutableState
-
-    private val mutablePosition = MutableLiveData(DEFAULT_POSITION)
-    val position: LiveData<String> = mutablePosition
-
-    fun prepare(url: String) {
-        if (mutableState.value != STATE_DEFAULT) return
-        try {
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener { mutableState.value = STATE_PREPARED }
-            mediaPlayer.setOnCompletionListener {
-                handler.removeCallbacks(timeRunnable)
-                mutablePosition.value = DEFAULT_POSITION
-                mutableState.value = STATE_PREPARED
+        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(Creator.providePlayerInteractor())
             }
-        } catch (e: Exception) {
-            mutableState.value = STATE_DEFAULT
         }
     }
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
+
+    private val mutableState = MutableLiveData(PlayerState(PlayerStatus.DEFAULT, DEFAULT_POSITION))
+    val state: LiveData<PlayerState> = mutableState
+
+    private val timeRunnable = object : Runnable {
+        override fun run() {
+            val current = mutableState.value ?: return
+            if (current.status == PlayerStatus.PLAYING) {
+                mutableState.value = current.copy(
+                    position = dateFormat.format(playerInteractor.currentPosition())
+                )
+                handler.postDelayed(this, TIME_REFRESH_DELAY)
+            }
+        }
+    }
+
+    init {
+        playerInteractor.setOnPreparedListener {
+            mutableState.value = mutableState.value?.copy(status = PlayerStatus.PREPARED)
+        }
+        playerInteractor.setOnCompletionListener {
+            handler.removeCallbacks(timeRunnable)
+            mutableState.value = mutableState.value?.copy(
+                status = PlayerStatus.PREPARED,
+                position = DEFAULT_POSITION
+            )
+        }
+    }
+
+    fun prepare(url: String) {
+        if (mutableState.value?.status != PlayerStatus.DEFAULT) return
+        runCatching { playerInteractor.prepare(url) }
+            .onFailure {
+                mutableState.value = mutableState.value?.copy(status = PlayerStatus.DEFAULT)
+            }
+    }
+
     fun togglePlayback() {
-        when (mutableState.value) {
-            STATE_PLAYING -> {
-                mediaPlayer.pause()
-                mutableState.value = STATE_PAUSED
+        when (mutableState.value?.status) {
+            PlayerStatus.PLAYING -> {
+                playerInteractor.pause()
+                mutableState.value = mutableState.value?.copy(status = PlayerStatus.PAUSED)
             }
 
-            STATE_PREPARED, STATE_PAUSED -> {
-                mediaPlayer.start()
-                mutableState.value = STATE_PLAYING
+            PlayerStatus.PREPARED, PlayerStatus.PAUSED -> {
+                playerInteractor.play()
+                mutableState.value = mutableState.value?.copy(status = PlayerStatus.PLAYING)
                 handler.postDelayed(timeRunnable, TIME_REFRESH_DELAY)
             }
 
@@ -64,24 +93,15 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun pause() {
-        if (mutableState.value == STATE_PLAYING) {
-            mediaPlayer.pause()
-            mutableState.value = STATE_PAUSED
-        }
-    }
-
-    private val timeRunnable = object : Runnable {
-        override fun run() {
-            if (mutableState.value == STATE_PLAYING) {
-                mutablePosition.value = dateFormat.format(mediaPlayer.currentPosition)
-                handler.postDelayed(this, TIME_REFRESH_DELAY)
-            }
+        if (mutableState.value?.status == PlayerStatus.PLAYING) {
+            playerInteractor.pause()
+            mutableState.value = mutableState.value?.copy(status = PlayerStatus.PAUSED)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacks(timeRunnable)
-        mediaPlayer.release()
+        playerInteractor.release()
     }
 }

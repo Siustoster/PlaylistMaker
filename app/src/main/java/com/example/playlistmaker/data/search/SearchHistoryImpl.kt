@@ -1,23 +1,24 @@
 package com.example.playlistmaker.data.search
 
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.domain.search.SharedPreferencesInteractor
 import com.google.gson.Gson
 
 const val TRACK_LIST_KEY = "saved_track_list"
 
-class SearchHistoryImpl(val sharedPreferences: SharedPreferencesInteractor, val gson: Gson) {
+class SearchHistoryImpl(val sharedPreferences: SharedPreferences, val gson: Gson) {
     fun getHistory(): List<TrackDto> {
-        val json = sharedPreferences.getSP(TRACK_LIST_KEY, "[]")
+        val json = sharedPreferences.getString(TRACK_LIST_KEY, "[]").orEmpty()
         return gson.fromJson(json, Array<TrackDto>::class.java).toList()
     }
 
     fun saveTracksToHistory(trackList: List<TrackDto>) {
-        sharedPreferences.setSP(TRACK_LIST_KEY, gson.toJson(trackList))
+        sharedPreferences.edit { putString(TRACK_LIST_KEY, gson.toJson(trackList)) }
     }
 
     fun clearHistory() {
-        sharedPreferences.deleteSP(TRACK_LIST_KEY)
+        sharedPreferences.edit { remove(TRACK_LIST_KEY) }
     }
 
 }
