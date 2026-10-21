@@ -4,12 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(
     private var tracks: List<Track>,
-    private val searchHistory: HistoryInteractor,
     private val onItemClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
@@ -28,13 +26,17 @@ class TrackAdapter(
         holder.bind(tracks[position])
         holder.trackView.setOnClickListener {
             onItemClick(tracks[position])
-            searchHistory.saveTrackToHistory(tracks[position])
-
         }
     }
 
     override fun getItemCount(): Int {
         return tracks.size
     }
+
+    fun update(newTracks: List<Track>) {
+        tracks = newTracks
+        notifyDataSetChanged()
+    }
+
 
 }
