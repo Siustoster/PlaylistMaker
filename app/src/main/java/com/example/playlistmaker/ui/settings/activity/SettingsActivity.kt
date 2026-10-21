@@ -21,11 +21,11 @@ class SettingsActivity : AppCompatActivity() {
         viewModel.themeLiveData.observe(this) { isDark ->
             if (binding.themeSwitch.isChecked != isDark)
                 binding.themeSwitch.isChecked = isDark
-            (applicationContext as App).switchTheme(isDark)
+            (application as App).switchTheme(isDark)
         }
 
         binding.themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
-            (applicationContext as App).switchTheme(isChecked)
+            viewModel.switchTheme(isChecked)
         }
 
         binding.prefBackButton.setOnClickListener {

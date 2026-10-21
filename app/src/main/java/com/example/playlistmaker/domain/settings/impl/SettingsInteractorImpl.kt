@@ -12,4 +12,5 @@ class SettingsInteractorImpl(private val repository: SharedPreferencesRepository
     override fun updateThemeSetting(settings: ThemeSettings) {
         repository.setSP(ThemeSettings.KEY, settings.darkTheme.toString())
     }
+
 }
