@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# локальный план рефакторинга (не коммитим)
+MVVM_REFACTOR_PLAN.md
