@@ -3,20 +3,16 @@ package com.example.playlistmaker.data.player
 import android.media.MediaPlayer
 import com.example.playlistmaker.domain.player.PlayerRepository
 
-class PlayerRepositoryImpl: PlayerRepository {
+class PlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : PlayerRepository {
 
     private var onPrepared: () -> Unit = {}
     private var onCompletion: () -> Unit = {}
-    private var mediaPlayer: MediaPlayer? = null
 
-    private fun requirePlayer(): MediaPlayer =
-        mediaPlayer ?: MediaPlayer().apply {
-            setOnPreparedListener { onPrepared() }
-            setOnCompletionListener { onCompletion() }
-        }.also { mediaPlayer = it }
+
+
 
     override fun prepare(url: String) {
-        requirePlayer().apply {
+        mediaPlayer.apply {
             setDataSource(url)
             prepareAsync()
         }
@@ -34,14 +30,16 @@ class PlayerRepositoryImpl: PlayerRepository {
 
     override fun release() {
         mediaPlayer?.release()
-        mediaPlayer = null
+        //mediaPlayer = null
     }
 
     override fun setOnPreparedListener(listener: () -> Unit) {
         onPrepared = listener
+        mediaPlayer.setOnPreparedListener { onPrepared() }
     }
 
     override fun setOnCompletionListener(listener: () -> Unit) {
         onCompletion = listener
+        mediaPlayer.setOnCompletionListener { onCompletion() }
     }
 }

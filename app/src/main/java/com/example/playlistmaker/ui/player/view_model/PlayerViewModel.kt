@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -29,11 +25,6 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
         private const val TIME_REFRESH_DELAY = 500L
         private const val DEFAULT_POSITION = "00:00"
 
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(Creator.providePlayerInteractor())
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
