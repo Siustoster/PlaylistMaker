@@ -8,6 +8,7 @@ import com.google.gson.Gson
 const val TRACK_LIST_KEY = "saved_track_list"
 
 class SearchHistoryImpl(val sharedPreferences: SharedPreferences, val gson: Gson) {
+
     fun getHistory(): List<TrackDto> {
         val json = sharedPreferences.getString(TRACK_LIST_KEY, "[]").orEmpty()
         return gson.fromJson(json, Array<TrackDto>::class.java).toList()

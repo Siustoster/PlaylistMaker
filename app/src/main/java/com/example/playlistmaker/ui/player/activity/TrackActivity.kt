@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,6 +13,7 @@ import com.example.playlistmaker.databinding.ActivityTrackBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.utils.Utilities
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -21,7 +21,7 @@ import java.util.Locale
 
 class TrackActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrackBinding
-    private val viewModel: PlayerViewModel by viewModels { PlayerViewModel.getFactory() }
+    private val viewModel: PlayerViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
