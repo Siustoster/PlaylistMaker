@@ -9,12 +9,25 @@ import com.example.playlistmaker.databinding.PlaylistFragmentBinding
 import com.example.playlistmaker.ui.media.view_model.PlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistFragment: Fragment() {
+class PlaylistFragment : Fragment() {
     private val viewModel: PlaylistViewModel by viewModel()
-    private lateinit var binding: PlaylistFragmentBinding
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = PlaylistFragmentBinding.inflate(inflater, container, false)
+
+    companion object {
+        fun newInstance() = PlaylistFragment()
+    }
+
+    private var _binding: PlaylistFragmentBinding? = null
+    private val binding get() = _binding!!
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = PlaylistFragmentBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
