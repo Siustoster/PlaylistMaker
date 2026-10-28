@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/newPlaylist"
+        style="@style/searchRefreshButton"
+        android:layout_width="133dp"
+        android:layout_height="36dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="24dp"
+        android:insetBottom="0dp"
+        android:insetTop="0dp"
+        app:cornerRadius="54dp"
+        android:text="@string/new_playlist"
+        android:textSize="14sp"
+        android:fontFamily="@font/ys_display_medium"
+        android:letterSpacing="0"
+        android:textAllCaps="false"
+        android:maxLines="1"
+        android:padding="0dp"
+
+        />
+    <ImageView
+        android:id="@+id/fav_placeholder_img"
+        style="@style/searchErrorPlaceholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylist"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="46dp" />
+
+    <TextView
+        android:id="@+id/fav_placeholder_text"
+        style="@style/searchErrorPlaceholderText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fav_placeholder_img"
+
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/playlist_error_placeholder_text"
+        android:textAlignment="center"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
