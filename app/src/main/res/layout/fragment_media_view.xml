@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.media.activity.MediaView">
+    tools:context="com.example.playlistmaker.ui.media.activity.MediaFragment">
 
     <LinearLayout
         android:id="@+id/media_header"
@@ -13,11 +13,6 @@
         android:layout_height="56dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/media_back_button"
-            style="@style/PreferencesBackArrow"
-            android:src="@drawable/ic_back_arrow_24" />
 
         <TextView
             style="@style/PreferencesHeader"
