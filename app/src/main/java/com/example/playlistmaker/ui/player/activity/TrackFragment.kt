@@ -1,15 +1,17 @@
 package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityTrackBinding
+import com.example.playlistmaker.databinding.FragmentTrackBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.utils.Utilities
@@ -18,45 +20,77 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.getValue
 
-class TrackActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityTrackBinding
+class TrackFragment : Fragment() {
+    companion object {
+        private const val TRACK_NAME = "trackName"
+        private const val ARTIST_NAME = "artistName"
+        private const val TRACK_TIME = "trackTime"
+        private const val ARTWORK_URL = "artworkUrl100"
+        private const val COLLECTION_NAME = "collectionName"
+        private const val RELEASE_DATE = "releaseDate"
+        private const val GENRE_NAME = "primaryGenreName"
+        private const val COUNTRY = "country"
+        private const val PREVIEW_URL = "previewUrl"
+        fun createArgs(
+            trackName: String,
+            artistName: String,
+            trackTime: String,
+            artwork: String,
+            collectionName: String,
+            releaseDate: String,
+            primaryGenreName: String,
+            country: String,
+            previewUrl: String
+        ): Bundle = bundleOf(
+            TRACK_NAME to trackName, ARTIST_NAME to artistName, TRACK_TIME to trackTime,
+            ARTWORK_URL to artwork, COLLECTION_NAME to collectionName, RELEASE_DATE to releaseDate,
+            GENRE_NAME to primaryGenreName, COUNTRY to country, PREVIEW_URL to previewUrl
+        )
+
+    }
+
+    private lateinit var binding: FragmentTrackBinding
     private val viewModel: PlayerViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityTrackBinding.inflate(layoutInflater)
-        setContentView(
-            binding.root
-        )
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentTrackBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val track = Track(
             "0",
-            trackName = intent.getStringExtra("track_name") ?: "",
-            artistName = intent.getStringExtra("artist_name") ?: "",
-            trackTime = intent.getStringExtra("duration") ?: "",
-            artworkUrl100 = intent.getStringExtra("albumCover") ?: "",
-            collectionName = intent.getStringExtra("collectionName") ?: "",
-            releaseDate = intent.getStringExtra("year") ?: "",
-            primaryGenreName = intent.getStringExtra("genreName") ?: "",
-            country = intent.getStringExtra("country") ?: "",
-            previewUrl = intent.getStringExtra("previewURL") ?: ""
+            trackName = requireArguments().getString((TRACK_NAME)) ?: "",
+            artistName = requireArguments().getString((ARTIST_NAME)) ?: "",
+            trackTime = requireArguments().getString((TRACK_TIME)) ?: "",
+            artworkUrl100 = requireArguments().getString((ARTWORK_URL)) ?: "",
+            collectionName = requireArguments().getString((COLLECTION_NAME)) ?: "",
+            releaseDate = requireArguments().getString((RELEASE_DATE)) ?: "",
+            primaryGenreName = requireArguments().getString((GENRE_NAME)) ?: "",
+            country = requireArguments().getString((COUNTRY)) ?: "",
+            previewUrl = requireArguments().getString((PREVIEW_URL)) ?: ""
         )
         bindTrack(track)
+
+
         observeViewModel()
 
         binding.trackBackArrow.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
         binding.playButton.setOnClickListener { viewModel.togglePlayback() }
         track.previewUrl?.takeIf { it.isNotBlank() }?.let(viewModel::prepare)
 
     }
+
     private fun bindTrack(track: Track) {
         binding.taTrackName.text = track.trackName
         binding.authorName.text = track.artistName
@@ -81,17 +115,19 @@ class TrackActivity : AppCompatActivity() {
             .placeholder(R.drawable.ic_album_placeholder_312)
             .into(binding.albumCover)
     }
+
     private fun formatDuration(millis: String?): String {
         val value = millis?.toIntOrNull() ?: return "00:00"
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(value)
     }
+
     private fun formatYear(date: String?): String =
         runCatching {
             LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME).year.toString()
         }.getOrDefault("")
 
     private fun observeViewModel() {
-        viewModel.state.observe(this) { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.playButton.isEnabled = state.isPlayButtonEnabled
             binding.playButton.setImageResource(
                 if (state.isPlaying) R.drawable.ic_pause_button_100
