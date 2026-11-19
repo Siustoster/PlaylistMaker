@@ -6,4 +6,6 @@
     <color name="yp_text_gray">#AEAFB4</color>
     <color name="yp_light_gray">#E6E8EB</color>
     <color name="back_button">#FFFFFFFF</color>
+    <color name="bottom_nav_unselected">#FFFFFFFF</color>
+    <color name="bottom_nav_background">#1A1B22</color>
 </resources>

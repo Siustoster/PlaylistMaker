@@ -1,31 +1,40 @@
 package com.example.playlistmaker.ui.main
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.media.activity.MediaView
-import com.example.playlistmaker.ui.search.activity.SearchActivity
-import com.example.playlistmaker.ui.settings.activity.SettingsActivity
+import com.example.playlistmaker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        enableEdgeToEdge()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val searchButton = findViewById<Button>(R.id.search_button_pm)
-        val mediaButton = findViewById<Button>(R.id.media_button_pm)
-        val prefButton = findViewById<Button>(R.id.pref_button_pm)
+        applyTopInset()
 
-        searchButton.setOnClickListener {
-            startActivity(Intent(this, SearchActivity::class.java))
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        val bottomNavigationView = binding.bottomNavigationView
+        bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener {  _, destination, _ ->
+            binding.bottomNavigationView.isVisible=destination.id != R.id.trackFragment
         }
-        mediaButton.setOnClickListener {
-            startActivity(Intent(this, MediaView::class.java))
-        }
-        prefButton.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
+    private fun applyTopInset() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
         }
     }
 }

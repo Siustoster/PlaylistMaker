@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.playlistmaker.ui.settings.activity.SettingsFragment"
     style="@style/PreferencesMainLayout">
 
     <LinearLayout
@@ -8,12 +10,6 @@
         android:layout_height="56dp"
 
         android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/pref_back_button"
-            style="@style/PreferencesBackArrow"
-            android:contentDescription="@string/back_button_desc"
-            android:src="@drawable/ic_back_arrow_24" />
 
         <TextView
             style="@style/PreferencesHeader"
