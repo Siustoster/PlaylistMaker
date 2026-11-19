@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.BundleCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,29 +25,11 @@ import kotlin.getValue
 
 class TrackFragment : Fragment() {
     companion object {
-        private const val TRACK_NAME = "trackName"
-        private const val ARTIST_NAME = "artistName"
-        private const val TRACK_TIME = "trackTime"
-        private const val ARTWORK_URL = "artworkUrl100"
-        private const val COLLECTION_NAME = "collectionName"
-        private const val RELEASE_DATE = "releaseDate"
-        private const val GENRE_NAME = "primaryGenreName"
-        private const val COUNTRY = "country"
-        private const val PREVIEW_URL = "previewUrl"
+        private const val ARG_TRACK = "track"
         fun createArgs(
-            trackName: String,
-            artistName: String,
-            trackTime: String,
-            artwork: String,
-            collectionName: String,
-            releaseDate: String,
-            primaryGenreName: String,
-            country: String,
-            previewUrl: String
+            track: Track
         ): Bundle = bundleOf(
-            TRACK_NAME to trackName, ARTIST_NAME to artistName, TRACK_TIME to trackTime,
-            ARTWORK_URL to artwork, COLLECTION_NAME to collectionName, RELEASE_DATE to releaseDate,
-            GENRE_NAME to primaryGenreName, COUNTRY to country, PREVIEW_URL to previewUrl
+            ARG_TRACK to track
         )
 
     }
@@ -66,18 +49,8 @@ class TrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val track = Track(
-            "0",
-            trackName = requireArguments().getString((TRACK_NAME)) ?: "",
-            artistName = requireArguments().getString((ARTIST_NAME)) ?: "",
-            trackTime = requireArguments().getString((TRACK_TIME)) ?: "",
-            artworkUrl100 = requireArguments().getString((ARTWORK_URL)) ?: "",
-            collectionName = requireArguments().getString((COLLECTION_NAME)) ?: "",
-            releaseDate = requireArguments().getString((RELEASE_DATE)) ?: "",
-            primaryGenreName = requireArguments().getString((GENRE_NAME)) ?: "",
-            country = requireArguments().getString((COUNTRY)) ?: "",
-            previewUrl = requireArguments().getString((PREVIEW_URL)) ?: ""
-        )
+        val track = BundleCompat.getParcelable(requireArguments(),ARG_TRACK,Track::class.java)?:return
+
         bindTrack(track)
 
 

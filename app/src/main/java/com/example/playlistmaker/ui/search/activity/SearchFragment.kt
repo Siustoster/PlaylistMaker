@@ -110,15 +110,7 @@ class SearchFragment : Fragment() {
         findNavController().navigate(
             R.id.action_searchFragment_to_trackFragment2,
             TrackFragment.createArgs(
-                trackName = track.trackName,
-                artistName = track.artistName,
-                trackTime = track.trackTime,
-                artwork = track.artworkUrl100.orEmpty(),
-                collectionName = track.collectionName.orEmpty(),
-                releaseDate = track.releaseDate.orEmpty(),
-                primaryGenreName = track.primaryGenreName.orEmpty(),
-                country = track.country.orEmpty(),
-                previewUrl = track.previewUrl.orEmpty()
+                track
             )
         )
     }
