@@ -24,6 +24,7 @@ class SearchViewModel(
 
     private var searchDebounceJob: Job? = null
     private var clickDebounceJob: Job? = null
+    private var searchJob: Job? = null
 
     private var isClickAllowed = true
     private var lastQuery: String = ""
@@ -64,12 +65,13 @@ class SearchViewModel(
 
         mutableState.value = SearchState.Loading
         if (query != lastQuery) return
-        viewModelScope.launch {
-            trackInteractor.searchTrack(query).collect {
-                result ->
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            trackInteractor.searchTrack(query).collect { result ->
                 mutableState.value = result.fold(
-                    onSuccess = {tracks ->
-                        if (tracks.isEmpty()) SearchState.Empty else SearchState.Content(tracks)},
+                    onSuccess = { tracks ->
+                        if (tracks.isEmpty()) SearchState.Empty else SearchState.Content(tracks)
+                    },
                     onFailure = { SearchState.Error }
 
                 )

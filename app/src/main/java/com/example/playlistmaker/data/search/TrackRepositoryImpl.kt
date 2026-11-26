@@ -18,7 +18,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 val data = response.trackList.map(TrackMapper::toDomain)
                 emit(Result.success(data))
             }
-        } else emit(Result.success(emptyList()))
+        } else emit(Result.failure(Throwable("Ошибка при запросе")))
 
     }
 

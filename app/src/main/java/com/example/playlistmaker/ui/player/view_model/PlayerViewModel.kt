@@ -24,7 +24,7 @@ data class PlayerState(
 class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewModel() {
 
     companion object {
-        private const val TIME_REFRESH_DELAY = 500L
+        private const val TIME_REFRESH_DELAY = 300L
         private const val DEFAULT_POSITION = "00:00"
 
     }
@@ -58,6 +58,7 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
     fun togglePlayback() {
         when (mutableState.value?.status) {
             PlayerStatus.PLAYING -> {
+                positionRefreshJob?.cancel()
                 playerInteractor.pause()
                 mutableState.value = mutableState.value?.copy(status = PlayerStatus.PAUSED)
             }
@@ -65,6 +66,7 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
             PlayerStatus.PREPARED, PlayerStatus.PAUSED -> {
                 playerInteractor.play()
                 mutableState.value = mutableState.value?.copy(status = PlayerStatus.PLAYING)
+                positionRefreshJob?.cancel()
                 positionRefreshJob = viewModelScope.launch {
                     while(mutableState.value?.status == PlayerStatus.PLAYING) {
                         delay(TIME_REFRESH_DELAY)
@@ -81,6 +83,7 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
 
     fun pause() {
         if (mutableState.value?.status == PlayerStatus.PLAYING) {
+            positionRefreshJob?.cancel()
             playerInteractor.pause()
             mutableState.value = mutableState.value?.copy(status = PlayerStatus.PAUSED)
         }
