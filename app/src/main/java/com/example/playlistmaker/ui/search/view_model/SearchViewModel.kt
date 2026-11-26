@@ -75,18 +75,6 @@ class SearchViewModel(
                 )
             }
         }
-        trackInteractor.searchTrack(query, object : TrackInteractor.TrackConsumer {
-            override fun consume(foundTracks: Result<List<Track>>) {
-                if (query != lastQuery) return
-
-                mutableState.value = foundTracks.fold(
-                    onSuccess = { tracks ->
-                        if (tracks.isEmpty()) SearchState.Empty else SearchState.Content(tracks)
-                    },
-                    onFailure = { SearchState.Error }
-                )
-            }
-        })
     }
 
     fun onTrackClicked(track: Track) {
