@@ -6,18 +6,20 @@ import com.example.playlistmaker.data.dto.TrackApiRequest
 import com.example.playlistmaker.data.dto.TrackApiResponse
 import com.example.playlistmaker.domain.search.TrackRepository
 import com.example.playlistmaker.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
-    override fun searchTrack(term: String): Result<List<Track>> {
-        try {
-            val response = networkClient.doRequest(TrackApiRequest(term))
+    override fun searchTrack(term: String): Flow<Result<List<Track>>> = flow {
 
-            if (response.resultCode == 200) {
-                return Result.success((response as TrackApiResponse).trackList.map(TrackMapper::toDomain))
-            } else return Result.success(emptyList())
-        } catch (e: Throwable) {
-            return Result.failure(e)
-        }
+        val response = networkClient.doRequest(TrackApiRequest(term))
+        if (response.resultCode == 200) {
+            with(response as TrackApiResponse) {
+                val data = response.trackList.map(TrackMapper::toDomain)
+                emit(Result.success(data))
+            }
+        } else emit(Result.success(emptyList()))
+
     }
 
 }

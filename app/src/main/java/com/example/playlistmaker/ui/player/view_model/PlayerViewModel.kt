@@ -1,11 +1,13 @@
 package com.example.playlistmaker.ui.player.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.player.PlayerInteractor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -26,31 +28,18 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
         private const val DEFAULT_POSITION = "00:00"
 
     }
-
-    private val handler = Handler(Looper.getMainLooper())
+    private var positionRefreshJob: Job? = null
     private val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
 
     private val mutableState = MutableLiveData(PlayerState(PlayerStatus.DEFAULT, DEFAULT_POSITION))
     val state: LiveData<PlayerState> = mutableState
-
-    private val timeRunnable = object : Runnable {
-        override fun run() {
-            val current = mutableState.value ?: return
-            if (current.status == PlayerStatus.PLAYING) {
-                mutableState.value = current.copy(
-                    position = dateFormat.format(playerInteractor.currentPosition())
-                )
-                handler.postDelayed(this, TIME_REFRESH_DELAY)
-            }
-        }
-    }
 
     init {
         playerInteractor.setOnPreparedListener {
             mutableState.value = mutableState.value?.copy(status = PlayerStatus.PREPARED)
         }
         playerInteractor.setOnCompletionListener {
-            handler.removeCallbacks(timeRunnable)
+            positionRefreshJob?.cancel()
             mutableState.value = mutableState.value?.copy(
                 status = PlayerStatus.PREPARED,
                 position = DEFAULT_POSITION
@@ -76,7 +65,14 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
             PlayerStatus.PREPARED, PlayerStatus.PAUSED -> {
                 playerInteractor.play()
                 mutableState.value = mutableState.value?.copy(status = PlayerStatus.PLAYING)
-                handler.postDelayed(timeRunnable, TIME_REFRESH_DELAY)
+                positionRefreshJob = viewModelScope.launch {
+                    while(mutableState.value?.status == PlayerStatus.PLAYING) {
+                        delay(TIME_REFRESH_DELAY)
+                        mutableState.value = mutableState.value?.copy(
+                            position = dateFormat.format(playerInteractor.currentPosition())
+                        )
+                    }
+                }
             }
 
             else -> Unit
@@ -92,7 +88,6 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
 
     override fun onCleared() {
         super.onCleared()
-        handler.removeCallbacks(timeRunnable)
         playerInteractor.release()
     }
 }

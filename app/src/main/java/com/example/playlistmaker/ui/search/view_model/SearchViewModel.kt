@@ -1,14 +1,16 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.HistoryInteractor
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.SingleLiveEvent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val trackInteractor: TrackInteractor,
@@ -20,8 +22,8 @@ class SearchViewModel(
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { performSearch() }
+    private var searchDebounceJob: Job? = null
+    private var clickDebounceJob: Job? = null
 
     private var isClickAllowed = true
     private var lastQuery: String = ""
@@ -39,16 +41,20 @@ class SearchViewModel(
         if (searchString == lastQuery) return
         lastQuery = searchString
 
-        handler.removeCallbacks(searchRunnable)
+        searchDebounceJob?.cancel()
+
         if (searchString.isBlank()) {
             mutableState.value = SearchState.Idle
         } else {
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+            searchDebounceJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                performSearch()
+            }
         }
     }
 
     fun onSearchRetry() {
-        handler.removeCallbacks(searchRunnable)
+        searchDebounceJob?.cancel()
         performSearch()
     }
 
@@ -57,6 +63,18 @@ class SearchViewModel(
         if (query.isBlank()) return
 
         mutableState.value = SearchState.Loading
+        if (query != lastQuery) return
+        viewModelScope.launch {
+            trackInteractor.searchTrack(query).collect {
+                result ->
+                mutableState.value = result.fold(
+                    onSuccess = {tracks ->
+                        if (tracks.isEmpty()) SearchState.Empty else SearchState.Content(tracks)},
+                    onFailure = { SearchState.Error }
+
+                )
+            }
+        }
         trackInteractor.searchTrack(query, object : TrackInteractor.TrackConsumer {
             override fun consume(foundTracks: Result<List<Track>>) {
                 if (query != lastQuery) return
@@ -74,7 +92,10 @@ class SearchViewModel(
     fun onTrackClicked(track: Track) {
         if (!isClickAllowed) return
         isClickAllowed = false
-        handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        clickDebounceJob = viewModelScope.launch {
+            delay(CLICK_DEBOUNCE_DELAY)
+            isClickAllowed = true
+        }
 
         historyInteractor.saveTrackToHistory(track)
         mutableHistory.value = historyInteractor.getHistory()
@@ -85,11 +106,5 @@ class SearchViewModel(
         historyInteractor.clearHistory()
         mutableHistory.value = emptyList()
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacks(searchRunnable)
-    }
-
 
 }
