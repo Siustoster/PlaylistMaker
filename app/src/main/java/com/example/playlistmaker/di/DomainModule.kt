@@ -1,9 +1,7 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.data.MainThreadImpl
 import com.example.playlistmaker.data.search.HistoryRepositoryImpl
 import com.example.playlistmaker.data.search.SearchHistoryImpl
-import com.example.playlistmaker.domain.search.MainThread
 import com.example.playlistmaker.data.search.SharedPreferencesRepositoryImpl
 import com.example.playlistmaker.data.search.TrackRepositoryImpl
 import com.example.playlistmaker.data.sharing.impl.ExternalNavigatorImpl
@@ -22,7 +20,6 @@ import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.factory
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -37,9 +34,6 @@ val domainModule = module {
     factory<SharedPreferencesRepository> {
         SharedPreferencesRepositoryImpl(get())
     }
-    factory<MainThread> {
-        MainThreadImpl()
-    }
 
     factory<HistoryRepository> {
         HistoryRepositoryImpl(SearchHistoryImpl(get(), get()))
@@ -51,7 +45,7 @@ val domainModule = module {
         TrackRepositoryImpl(get())
     }
     factory<TrackInteractor> {
-        TrackInteractorImpl(get(), get())
+        TrackInteractorImpl(get())
     }
     factory<PlayerInteractor> {
         PlayerInteractorImpl(get())
