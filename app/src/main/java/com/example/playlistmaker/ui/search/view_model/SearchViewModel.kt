@@ -32,7 +32,12 @@ class SearchViewModel(
     private val mutableState = MutableLiveData<SearchState>(SearchState.Idle)
     val state: LiveData<SearchState> = mutableState
 
-    private val mutableHistory = MutableLiveData(historyInteractor.getHistory())
+    private val mutableHistory = MutableLiveData<List<Track>>(emptyList())
+
+    init {
+        viewModelScope.launch { mutableHistory.value = historyInteractor.getHistory() }
+    }
+
     val history: LiveData<List<Track>> = mutableHistory
 
     private val mutableOpenPlayer = SingleLiveEvent<Track>()
@@ -87,9 +92,11 @@ class SearchViewModel(
             isClickAllowed = true
         }
 
-        historyInteractor.saveTrackToHistory(track)
-        mutableHistory.value = historyInteractor.getHistory()
-        mutableOpenPlayer.value = track
+        viewModelScope.launch {
+            historyInteractor.saveTrackToHistory(track)
+            mutableHistory.value = historyInteractor.getHistory()
+            mutableOpenPlayer.value = track
+        }
     }
 
     fun clearHistory() {

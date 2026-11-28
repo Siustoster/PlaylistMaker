@@ -1,10 +1,12 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.favorites.FavTrackInteractor
 import com.example.playlistmaker.data.search.HistoryRepositoryImpl
 import com.example.playlistmaker.data.search.SearchHistoryImpl
 import com.example.playlistmaker.data.search.SharedPreferencesRepositoryImpl
 import com.example.playlistmaker.data.search.TrackRepositoryImpl
 import com.example.playlistmaker.data.sharing.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.domain.media.impl.FavTrackInteractorImpl
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.HistoryInteractor
@@ -35,14 +37,16 @@ val domainModule = module {
         SharedPreferencesRepositoryImpl(get())
     }
 
+    single<FavTrackInteractor> { FavTrackInteractorImpl(get()) }
+
     factory<HistoryRepository> {
-        HistoryRepositoryImpl(SearchHistoryImpl(get(), get()))
+        HistoryRepositoryImpl(SearchHistoryImpl(get(), get()), get())
     }
     factory<HistoryInteractor> {
         HistoryInteractorImpl(get())
     }
     factory<TrackRepository> {
-        TrackRepositoryImpl(get())
+        TrackRepositoryImpl(get(), get())
     }
     factory<TrackInteractor> {
         TrackInteractorImpl(get())
