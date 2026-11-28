@@ -9,7 +9,11 @@
         android:id="@+id/mediaFragment"
         android:name="com.example.playlistmaker.ui.media.activity.MediaFragment"
         android:label="fragment_media_view"
-        tools:layout="@layout/fragment_media_view" />
+        tools:layout="@layout/fragment_media_view" >
+        <action
+            android:id="@+id/action_mediaFragment_to_trackFragment"
+            app:destination="@id/trackFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.ui.search.activity.SearchFragment"

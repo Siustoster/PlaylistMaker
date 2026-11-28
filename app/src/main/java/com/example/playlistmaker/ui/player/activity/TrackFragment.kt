@@ -46,13 +46,13 @@ class TrackFragment : Fragment() {
         return binding.root
     }
 
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val track = BundleCompat.getParcelable(requireArguments(),ARG_TRACK,Track::class.java)?:return
-
+        val track = BundleCompat.getParcelable(requireArguments(), ARG_TRACK, Track::class.java)?:return
         bindTrack(track)
-
 
         observeViewModel()
 
@@ -60,7 +60,10 @@ class TrackFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.playButton.setOnClickListener { viewModel.togglePlayback() }
-        track.previewUrl?.takeIf { it.isNotBlank() }?.let(viewModel::prepare)
+        viewModel.prepare(track)
+        binding.trackFavButton.setOnClickListener {
+           viewModel.onFavClicked(track)
+        }
 
     }
 
@@ -87,6 +90,11 @@ class TrackFragment : Fragment() {
             .transform(RoundedCorners(Utilities.dpToPx(8f, binding.albumCover.context)))
             .placeholder(R.drawable.ic_album_placeholder_312)
             .into(binding.albumCover)
+
+        binding.trackFavButton.setImageResource(
+            if (track.isFavorite) R.drawable.ic_fav_button_active_51
+            else R.drawable.ic_fav_button_51
+        )
     }
 
     private fun formatDuration(millis: String?): String {
@@ -107,6 +115,10 @@ class TrackFragment : Fragment() {
                 else R.drawable.ic_play_button_100
             )
             binding.currentTrackPlayTime.text = state.position
+            binding.trackFavButton.setImageResource(
+                if (state.isFavourite) R.drawable.ic_fav_button_active_51
+                else R.drawable.ic_fav_button_51
+            )
         }
     }
 
